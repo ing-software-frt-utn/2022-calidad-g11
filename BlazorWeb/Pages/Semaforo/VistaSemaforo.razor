@@ -1,0 +1,70 @@
+﻿@page "/EstadoSemaforo"
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Zapatillas.Domain.Entities
+@inject HttpClient Http
+
+
+<h3>VistaSemaforo</h3>
+
+<div>
+    <table class="table">
+        <tr>
+            <th>Tipo Defecto</th>
+            <th>Cantidad</th>
+            <th></th>
+        </tr>
+         @if(oRespuesta != null && oRespuesta != null)
+        {
+            @for(int i=0; i<5; i++)
+            {
+                    <tr>
+                        <td></td>
+                        <td>@DefectosByCantidad[i].TipoDefecto</td>
+                        <td>@DefectosByCantidad[i].Cantidad</td>
+                    </tr>
+            }
+        }
+    </table>
+</div>
+
+<div>
+    <table class="table">
+        <tr>
+            <th>Tipo Defecto</th>
+            <th>Cantidad</th>
+            <th></th>
+        </tr>
+    </table>
+</div>
+
+@code {
+    public string Url = "/OrdenProduccion/All";
+    public List<OrdenProduccion> oRespuesta = new List<OrdenProduccion>();
+    public List<Defecto> DefectosByCantidad = new List<Defecto>();
+    OrdenProduccion opActiva = new OrdenProduccion();
+
+    protected override async Task OnInitializedAsync()
+    {
+       // oRespuesta = await Http.GetFromJsonAsync<List<OrdenProduccion>>(Url);
+       // foreach(var oElement in oRespuesta)
+       // {
+       //     if (oElement.IsActive())
+       //     {
+       //         opActiva = oElement;
+       //         break;
+       //     }
+       // }
+       // List<Defecto> Defectos = new List<Defecto>();
+       /// foreach (var oElement in (List<Incidencia>)opActiva.GetLastJornadaLaboral().RegistrosDefecto)
+       // {
+       //     foreach (var defecto in oElement.Defectos)
+       //     {
+       //         Defectos.Add(defecto);
+       //     }
+       // }
+       // DefectosByCantidad = Defectos.OrderBy(def => def.Cantidad).ToList();
+        //List<OrdenProduccion> oRespuestaByCantidad = oRespuesta.OrderBy(op1 => op1.GetLastJornadaLaboral().RegistrosDefecto).ToList();
+    }
+}

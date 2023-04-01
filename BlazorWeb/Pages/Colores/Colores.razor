@@ -1,0 +1,46 @@
+﻿@page "/colores"
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Zapatillas.Domain.Entities
+@inject HttpClient Http
+
+<h3>Colores</h3>
+
+<div class="row">
+    <div class="col-12 text-right">
+        <a href="colorForm">Nuevo</a>
+    </div>
+
+</div>
+
+<table class="table">
+    <tr>
+        <th>Codigo Color</th>
+        <th>Descripcion</th>
+        <th></th>
+    </tr>
+    @if(oRespuesta != null && oRespuesta != null)
+    {
+        @foreach (var oElement in (List<Colour>)oRespuesta)
+        {
+                <tr>
+                    <td>@oElement.CodigoColor</td>
+                    <td>@oElement.Descripcion</td>
+                    <td>
+                        <a href="/colorForm/@oElement.Id">Editar</a>
+                        <a href="/colorForm/@oElement.Id">Eliminar</a>
+                    </td>
+                </tr>
+        }
+    }
+</table>
+
+@code {
+    public string Url = "/Color/AllAsync";
+    public List<Colour> oRespuesta = new List<Colour>();
+
+    protected override async Task OnInitializedAsync() =>
+        oRespuesta = await Http.GetFromJsonAsync <List<Colour>>(Url);
+
+}

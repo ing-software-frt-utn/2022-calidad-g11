@@ -1,0 +1,97 @@
+﻿@page "/modeloForm"
+@page "/modeloForm/{Id:int}"
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using WebControlShoes.Application.DTOs
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+
+<h3>Form Modelo</h3>
+
+<EditForm Model="@oModelo">
+    <div class="container-fluid">
+
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">SKU</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" @bind-Value="@oModelo.Sku"></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Denominacion</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" @bind-Value="@oModelo.Name"></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Limite Inferior Observado</label>
+            <div class="col-sm-9">
+                <InputNumber class="form-control" @bind-Value="@oModelo.InferiorObservado"></InputNumber>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Limite Superior Observado</label>
+            <div class="col-sm-9">
+                <InputNumber class="form-control" @bind-Value="@oModelo.SuperiorObservado"></InputNumber>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Limite Inferior Reproceso</label>
+            <div class="col-sm-9">
+                <InputNumber class="form-control" @bind-Value="@oModelo.InferiorReproceso"></InputNumber>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Limite Superior Reproceso</label>
+            <div class="col-sm-9">
+                <InputNumber class="form-control" @bind-Value="@oModelo.SuperiorReproceso"></InputNumber>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <div class="col-sm-12">
+                <button @onclick="Cancelar">Cancelar</button>
+                <button class="btn btn-primary" @onclick="Save">Guardar</button>
+            </div>
+        </div>
+
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id{ get; set; }
+
+    ModelDTO oModelo = new ModelDTO();
+    public ModelDTO oRespuesta = new ModelDTO();
+    public string Url = "/Model/CreateAsync";
+
+    private async Task Save()
+    {
+        if (Id != 0)
+        {
+            var response = await Http.PutAsJsonAsync<ModelDTO>(Url, oModelo);
+            oRespuesta = response.Content.ReadFromJsonAsync<ModelDTO>().Result;
+        }
+        else
+        {
+            var response = await Http.PostAsJsonAsync<ModelDTO>(Url, oModelo);
+            //oRespuesta = response.Content.ReadFromJsonAsync<List<Color>>().Result;
+            oRespuesta = response.Content.ReadFromJsonAsync<ModelDTO>().Result;
+            //var response = await Http.PostAsJsonAsync<Color>(Url, oColor);
+        }
+        NavigationManager.NavigateTo("/modelos");
+    }
+
+    public void Cancelar() => NavigationManager.NavigateTo("/modelos");
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            oModelo = await Http.GetFromJsonAsync<ModelDTO>(Url + "/" + Id);
+        }
+    }
+}

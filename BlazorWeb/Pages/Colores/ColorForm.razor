@@ -1,0 +1,73 @@
+﻿@page "/colorForm"
+@page "/colorForm/{Id:int}"
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using WebControlShoes.Application.DTOs
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+
+<h3>ColorForm</h3>
+
+<EditForm Model="@oColor">
+    <div class="container-fluid">
+
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Codigo Color</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" @bind-Value="@oColor.CodColor"></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Descripcion</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" @bind-Value="@oColor.Descripcion"></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <div class="col-sm-12">
+                <button @onclick="Cancelar">Cancelar</button>
+                <button class="btn btn-primary" @onclick="Save">Guardar</button>
+            </div>
+        </div>
+
+    </div>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int Id{ get; set; }
+
+    ColorDTO oColor = new ColorDTO();
+    public ColorDTO oRespuesta = new ColorDTO();
+    public string Url = "/Color/CreateAsync";
+
+    private async Task Save()
+    {
+        if (Id != 0)
+        {
+            var response = await Http.PutAsJsonAsync<ColorDTO>(Url, oColor);
+            oRespuesta = response.Content.ReadFromJsonAsync<ColorDTO>().Result;
+        }
+        else
+        {
+            var response = await Http.PostAsJsonAsync<ColorDTO>(Url, oColor);
+            //oRespuesta = response.Content.ReadFromJsonAsync<List<Color>>().Result;
+            oRespuesta = response.Content.ReadFromJsonAsync<ColorDTO>().Result;
+            //var response = await Http.PostAsJsonAsync<Color>(Url, oColor);
+        }
+        NavigationManager.NavigateTo("/colores");
+    }
+
+    public void Cancelar() => NavigationManager.NavigateTo("/colores");
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            oColor = await Http.GetFromJsonAsync<ColorDTO>(Url + "/" + Id);
+        }
+    }
+}

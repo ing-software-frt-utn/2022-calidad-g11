@@ -1,0 +1,35 @@
+﻿@page "/eliminarcolor/{Id:int}"
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>EliminarColor</h3>
+
+<p>¿Deseas eliminar el color N°@Id ?</p>
+
+<div>
+    <button @onclick="Cancelar">Cancelar</button>
+    <button @onclick="Delete">Eliminar</button>
+</div>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public string Url = "/Color/Create";
+
+    //Respuesta<object> oRespuesta = new Respuesta<object>();
+
+
+    public void Cancelar() => NavigationManager.NavigateTo("/colores");
+
+    private async Task Delete()
+    {
+        var response = await Http.DeleteAsync(Url+"/"+Id);
+        //oRespuesta = response.Content.ReadFromJsonAsync<Respuesta<object>>().Result;
+        
+        NavigationManager.NavigateTo("/colores");
+    }
+}
