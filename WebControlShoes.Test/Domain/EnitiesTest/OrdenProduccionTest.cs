@@ -127,7 +127,7 @@ namespace UnitTest.Domain.EnitiesTest
 
 
         [Fact]
-        public async Task CrearJornadaLaboralConOrdenDeProduccionPausada()
+        public async Task IntentarCrearJornadaLaboralConOrdenDeProduccionPausada()
         {
  
 
